@@ -1,0 +1,80 @@
+definitions:
+  dto.MatchResponse:
+    properties:
+      Title:
+        type: string
+      distance:
+        type: number
+    type: object
+host: localhost:3001
+info:
+  contact: {}
+  description: Matching API to send request Driver Location API
+  title: Matching API
+  version: "1.0"
+paths:
+  /search/driver:
+    get:
+      consumes:
+      - '*/*'
+      description: Find nearest driver to user from given location point
+      parameters:
+      - description: latitude
+        in: query
+        name: latitude
+        required: true
+        type: number
+      - description: longitude
+        in: query
+        name: longitude
+        required: true
+        type: number
+      - description: radius
+        in: query
+        name: radius
+        required: true
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MatchResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Find nearest driver to user
+      tags:
+      - User-Driver Matching
+  /token:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets valid jwt token to send request matching API
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Get valid jwt token
+      tags:
+      - JWT
+  /tokenNotAuthenticated:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets unauthanticated jwt token to send request matching API
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Get unauthanticated jwt token
+      tags:
+      - JWT
+swagger: "2.0"

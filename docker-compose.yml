@@ -1,0 +1,52 @@
+version: '3.7'
+
+services:
+  mongodb:
+    image: mongo
+    networks:
+      - mongo-network
+    environment:
+      - MONGO_INITDB_DATABASE=driver
+#      - MONGO_INITDB_ROOT_USERNAME=root
+#      - MONGO_INITDB_ROOT_PASSWORD=root
+    ports:
+      - '27017:27017'
+
+  mongo-express:
+    container_name: mongo-express
+    image: mongo-express
+    restart: always
+    networks:
+      - mongo-network
+    depends_on:
+      - mongodb
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_BASICAUTH_USERNAME=user
+      - ME_CONFIG_BASICAUTH_PASSWORD=pass
+    ports:
+      - '8081:8081'
+
+  matching-api:
+    build: ./MatchingAPI/
+    container_name: matching-api
+    restart: always
+    networks:
+      - mongo-network
+    ports:
+      - '3001:3001'
+
+  driver-location:
+    build: ./DriverLocation/
+    container_name: driver-location
+    restart: always
+    networks:
+      - mongo-network
+    depends_on:
+      - mongodb
+    ports:
+      - '3000:3000'
+
+networks:
+  mongo-network:
+    driver: bridge

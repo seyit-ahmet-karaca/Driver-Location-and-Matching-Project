@@ -1,0 +1,73 @@
+definitions:
+  dto.NearestDriverResponse:
+    properties:
+      Title:
+        type: string
+      distance:
+        type: number
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: Driver Location API
+  title: Driver Location API
+  version: "1.0"
+paths:
+  /api/driver-locations:
+    post:
+      consumes:
+      - '*/*'
+      description: Creates driver location by longitude and latitude or bulk file.
+      parameters:
+      - description: latitude
+        in: query
+        name: latitude
+        type: number
+      - description: longitude
+        in: query
+        name: longitude
+        type: number
+      - description: bulk location file
+        in: formData
+        name: file
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Create Driver Location.
+      tags:
+      - Driver
+  /api/search/location:
+    get:
+      consumes:
+      - application/json
+      description: gets nearest driver location by given point and radius
+      parameters:
+      - description: radius
+        in: query
+        name: radius
+        required: true
+        type: integer
+      - description: longitude
+        in: query
+        name: longitude
+        required: true
+        type: number
+      - description: latitude
+        in: query
+        name: latitude
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.NearestDriverResponse'
+      summary: Gets nearest driver location
+      tags:
+      - Driver
+swagger: "2.0"

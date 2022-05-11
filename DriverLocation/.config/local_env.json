@@ -1,0 +1,8 @@
+{
+  "MongoDbUrl": "mongodb://mongodb/driver",
+  "MongoRecordSeparator": ",",
+  "RecordBatchCount": 25000,
+  "secretMatchApiKey": "matchApıSecretKey",
+  "MatchApiHeader": "match-api-key",
+  "MongoDbName": "driver"
+}

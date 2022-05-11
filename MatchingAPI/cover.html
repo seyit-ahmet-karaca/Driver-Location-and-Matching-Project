@@ -1,0 +1,1217 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>config: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">MatchingAPI/config/config.go (75.0%)</option>
+				
+				<option value="file1">MatchingAPI/config/env.go (60.0%)</option>
+				
+				<option value="file2">MatchingAPI/controller/matchingController.go (80.8%)</option>
+				
+				<option value="file3">MatchingAPI/controller/userController.go (0.0%)</option>
+				
+				<option value="file4">MatchingAPI/docs/docs.go (100.0%)</option>
+				
+				<option value="file5">MatchingAPI/exception/errorTypes.go (75.0%)</option>
+				
+				<option value="file6">MatchingAPI/initialization/driverAPI.go (0.0%)</option>
+				
+				<option value="file7">MatchingAPI/initialization/userAPI.go (0.0%)</option>
+				
+				<option value="file8">MatchingAPI/main.go (0.0%)</option>
+				
+				<option value="file9">MatchingAPI/mock/mock_matchingController.go (0.0%)</option>
+				
+				<option value="file10">MatchingAPI/mock/mock_matchingService.go (100.0%)</option>
+				
+				<option value="file11">MatchingAPI/mock/mock_userService.go (0.0%)</option>
+				
+				<option value="file12">MatchingAPI/route/route.go (0.0%)</option>
+				
+				<option value="file13">MatchingAPI/route/searching.go (0.0%)</option>
+				
+				<option value="file14">MatchingAPI/route/userRoute.go (0.0%)</option>
+				
+				<option value="file15">MatchingAPI/security/jwtConfigMiddleware.go (73.7%)</option>
+				
+				<option value="file16">MatchingAPI/server/server.go (5.0%)</option>
+				
+				<option value="file17">MatchingAPI/service/matchingService.go (90.6%)</option>
+				
+				<option value="file18">MatchingAPI/service/userService.go (100.0%)</option>
+				
+				<option value="file19">MatchingAPI/test/util/httpClients.go (100.0%)</option>
+				
+				<option value="file20">MatchingAPI/util/requests.go (85.7%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package config
+
+import (
+        "encoding/json"
+        "io"
+        "os"
+        "strings"
+)
+
+type Config struct {
+        JwtSecret       string `json:"jwtSecret"`
+        JwtDurationHour int64  `json:"jwtDurationHour"`
+        SecretMatchApiKey string `json:"secretMatchApiKey"`
+        MatchApiHeader string `json:"matchApiHeader"`
+}
+
+var c = &amp;Config{}
+
+func init() <span class="cov8" title="1">{
+        mydir, err := os.Getwd()
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+
+        <span class="cov8" title="1">if strings.Contains(mydir, "service") || strings.Contains(mydir, "controller") </span><span class="cov8" title="1">{
+                os.Chdir("../..")
+        }</span>
+
+        <span class="cov8" title="1">file, err := os.Open(".config/" + env + ".json")
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+        <span class="cov8" title="1">defer file.Close()
+
+        read, err := io.ReadAll(file)
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+
+        <span class="cov8" title="1">err = json.Unmarshal(read, c)
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+}
+
+func Get() *Config <span class="cov8" title="1">{
+        return c
+}</span>
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package config
+
+import "os"
+
+const (
+        envKey   = "APP_ENV"
+        EnvLocal = "local_env"
+        EnvTest = "test_env"
+        EnvProd = "production_env"
+)
+
+var env = GetEnv(envKey, EnvLocal)
+
+func Env() string <span class="cov0" title="0">{
+        return env
+}</span>
+
+func GetEnv(key, def string) string <span class="cov8" title="1">{
+        env, ok := os.LookupEnv(key)
+        if ok </span><span class="cov0" title="0">{
+                return env
+        }</span>
+
+        <span class="cov8" title="1">return def</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package controller
+
+import (
+        _ "MatchingAPI/docs"
+        "MatchingAPI/dto"
+        "MatchingAPI/service"
+        "github.com/labstack/echo/v4"
+        "net/http"
+        "strconv"
+        "sync"
+)
+
+var lock sync.Mutex
+var singleInstance IMatchingController
+
+type IMatchingController interface {
+        FindDriver(e echo.Context) error
+}
+
+type MatchingController struct {
+        Service service.IMatchingService
+}
+
+func NewMatchingController(service service.IMatchingService) IMatchingController <span class="cov8" title="1">{
+        if singleInstance == nil </span><span class="cov8" title="1">{
+                lock.Lock()
+                defer lock.Unlock()
+                if singleInstance == nil </span><span class="cov8" title="1">{
+                        singleInstance = &amp;MatchingController{
+                                Service: service,
+                        }
+                }</span>
+        }
+        <span class="cov8" title="1">return singleInstance</span>
+}
+
+// Find nearest driver to user
+// @Summary Find nearest driver to user
+// @Description Find nearest driver to user from given location point
+// @Accept */*
+// @Tags User-Driver Matching
+// @Produce json
+// @Success 200 {object} dto.MatchResponse
+// @Router /search/driver [get]
+// @Param   latitude                     query     number  true  "latitude"
+// @Param   longitude                    query     number  true  "longitude"
+// @Param   radius                       query     int     true  "radius"
+// @Param   Authorization     header    string  true  "Authorization"
+// @Security ApiKeyAuth
+func (m *MatchingController) FindDriver(e echo.Context) error <span class="cov8" title="1">{
+        radius := e.QueryParam("radius")
+        latitude := e.QueryParam("latitude")
+        longitude := e.QueryParam("longitude")
+
+        radiusInt, err := strconv.Atoi(radius)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">latitudeFloat, err := strconv.ParseFloat(latitude, 64)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">longitudeFloat, err := strconv.ParseFloat(longitude, 64)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">location := &amp;dto.SearchLocation{
+                Radius:    radiusInt,
+                Latitude:  latitudeFloat,
+                Longitude: longitudeFloat,
+        }
+        client := &amp;http.Client{}
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">driverWithDistance, err := m.Service.FindDriver(location, client)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">return e.JSON(http.StatusOK, driverWithDistance)</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package controller
+
+import (
+        _ "MatchingAPI/docs"
+        "MatchingAPI/service"
+        "github.com/labstack/echo/v4"
+        "net/http"
+        "sync"
+)
+
+var userLock sync.Mutex
+var userSingletonInstance IUserController
+
+type IUserController interface {
+        GetJWT(e echo.Context) error
+        GetWrongJWT(e echo.Context) error
+}
+
+type UserController struct {
+        Service service.IUserService
+}
+
+func NewUserController(service service.IUserService) IUserController <span class="cov0" title="0">{
+        if userSingletonInstance == nil </span><span class="cov0" title="0">{
+                userLock.Lock()
+                defer userLock.Unlock()
+                if userSingletonInstance == nil </span><span class="cov0" title="0">{
+                        userSingletonInstance = &amp;UserController{
+                                Service: service,
+                        }
+                }</span>
+        }
+        <span class="cov0" title="0">return userSingletonInstance</span>
+}
+
+// Get valid jwt token
+// @Summary Get valid jwt token
+// @Description Gets valid jwt token to send request matching API
+// @Tags JWT
+// @Accept */*
+// @Produce json
+// @Success 200
+// @Router /token [get]
+func (m *UserController) GetJWT(e echo.Context) error <span class="cov0" title="0">{
+        return e.JSON(http.StatusOK, m.Service.CreateJWT())
+}</span>
+
+// Get unauthanticated jwt token
+// @Summary Get unauthanticated jwt token
+// @Description Gets unauthanticated jwt token to send request matching API
+// @Accept */*
+// @Tags JWT
+// @Produce json
+// @Success 200
+// @Router /tokenNotAuthenticated [get]
+func (m *UserController) GetWrongJWT(e echo.Context) error <span class="cov0" title="0">{
+        return e.JSON(http.StatusOK, m.Service.CreateWrongJWT())
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">// Package docs GENERATED BY SWAG; DO NOT EDIT
+// This file was generated by swaggo/swag
+package docs
+
+import "github.com/swaggo/swag"
+
+const docTemplate = `{
+    "schemes": {{ marshal .Schemes }},
+    "swagger": "2.0",
+    "info": {
+        "description": "{{escape .Description}}",
+        "title": "{{.Title}}",
+        "contact": {},
+        "version": "{{.Version}}"
+    },
+    "host": "{{.Host}}",
+    "basePath": "{{.BasePath}}",
+    "paths": {
+        "/search/driver": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find nearest driver to user from given location point",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User-Driver Matching"
+                ],
+                "summary": "Find nearest driver to user",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "latitude",
+                        "name": "latitude",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "longitude",
+                        "name": "longitude",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "radius",
+                        "name": "radius",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/testDto.MatchResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/token": {
+            "get": {
+                "description": "Gets valid jwt token to send request matching API",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "JWT"
+                ],
+                "summary": "Get valid jwt token",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/tokenNotAuthenticated": {
+            "get": {
+                "description": "Gets unauthanticated jwt token to send request matching API",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "JWT"
+                ],
+                "summary": "Get unauthanticated jwt token",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "testDto.MatchResponse": {
+            "type": "object",
+            "properties": {
+                "Title": {
+                    "type": "string"
+                },
+                "distance": {
+                    "type": "number"
+                }
+            }
+        }
+    }
+}`
+
+// SwaggerInfo holds exported Swagger Info so clients can modify it
+var SwaggerInfo = &amp;swag.Spec{
+        Version:          "1.0",
+        Host:             "localhost:3001",
+        BasePath:         "",
+        Schemes:          []string{},
+        Title:            "Matching API",
+        Description:      "Matching API to send request Driver Location API",
+        InfoInstanceName: "swagger",
+        SwaggerTemplate:  docTemplate,
+}
+
+func init() <span class="cov8" title="1">{
+        swag.Register(SwaggerInfo.InstanceName(), SwaggerInfo)
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package exception
+
+type hystrixException struct {
+        Message string `json:"message"`
+}
+
+func (h *hystrixException) Error() string <span class="cov0" title="0">{
+        return h.Message
+}</span>
+
+func GetHystrixException() *hystrixException<span class="cov0" title="0">{
+        return &amp;hystrixException{
+                Message: "HystrixException",
+        }
+}</span>
+
+type dataNotFoundException struct {
+        Message string `json:"message"`
+}
+
+func (h *dataNotFoundException) Error() string <span class="cov8" title="1">{
+        return h.Message
+}</span>
+
+func GetDataNotFoundException() *dataNotFoundException<span class="cov8" title="1">{
+        return &amp;dataNotFoundException{
+                Message: "Data not found",
+        }
+}</span>
+
+type genericException struct {
+        Message string `json:"message"`
+}
+
+func (h *genericException) Error() string <span class="cov8" title="1">{
+        return h.Message
+}</span>
+
+func GetGenericException(errorMessage string) *genericException<span class="cov8" title="1">{
+        return &amp;genericException{
+                Message: errorMessage,
+        }
+}</span>
+
+
+type unauthorizedException struct {
+        Message string `json:"message"`
+}
+
+func (h *unauthorizedException) Error() string <span class="cov8" title="1">{
+        return h.Message
+}</span>
+
+func GetUnauthorizedException() *unauthorizedException<span class="cov8" title="1">{
+        return &amp;unauthorizedException{
+                Message: "Unauthorized request",
+        }
+}</pre>
+		
+		<pre class="file" id="file6" style="display: none">package initialization
+
+import (
+        "MatchingAPI/controller"
+        "MatchingAPI/service"
+)
+
+// App is a dependency container for the api
+type DriverAPI struct {
+        Controller DriverController
+}
+
+type DriverController struct {
+        Driver controller.IMatchingController
+}
+
+func InitializeDriverAPI() DriverAPI <span class="cov0" title="0">{
+        return DriverAPI{
+                Controller:
+                DriverController{
+                                controller.NewMatchingController(
+                                        service.NewMatchingService(),
+                                ),
+                        },
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package initialization
+
+import (
+        "MatchingAPI/controller"
+        "MatchingAPI/service"
+)
+
+type UserAPI struct {
+        Controller UserController
+}
+
+type UserController struct {
+        User controller.IUserController
+}
+
+func InitializeUserAPI() UserAPI <span class="cov0" title="0">{
+        return UserAPI{
+                Controller:
+                UserController{
+                        controller.NewUserController(
+                                service.NewUserService(),
+                        ),
+                },
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package main
+
+import (
+        "MatchingAPI/server"
+)
+
+// @title Matching API
+// @version 1.0
+// @description Matching API to send request Driver Location API
+
+// @host localhost:3001
+func main() <span class="cov0" title="0">{
+        s := server.NewServer()
+        s.StartServer(3001)
+}</span>
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: .\controller\matchingController.go
+
+// Package mock is a generated GoMock package.
+package mock
+
+import (
+        reflect "reflect"
+
+        gomock "github.com/golang/mock/gomock"
+        echo "github.com/labstack/echo/v4"
+)
+
+// MockIMatchingController is a mock of IMatchingController interface.
+type MockIMatchingController struct {
+        ctrl     *gomock.Controller
+        recorder *MockIMatchingControllerMockRecorder
+}
+
+// MockIMatchingControllerMockRecorder is the mock recorder for MockIMatchingController.
+type MockIMatchingControllerMockRecorder struct {
+        mock *MockIMatchingController
+}
+
+// NewMockIMatchingController creates a new mock instance.
+func NewMockIMatchingController(ctrl *gomock.Controller) *MockIMatchingController <span class="cov0" title="0">{
+        mock := &amp;MockIMatchingController{ctrl: ctrl}
+        mock.recorder = &amp;MockIMatchingControllerMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockIMatchingController) EXPECT() *MockIMatchingControllerMockRecorder <span class="cov0" title="0">{
+        return m.recorder
+}</span>
+
+// FindDriver mocks base method.
+func (m *MockIMatchingController) FindDriver(e echo.Context) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindDriver", e)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// FindDriver indicates an expected call of FindDriver.
+func (mr *MockIMatchingControllerMockRecorder) FindDriver(e interface{}) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindDriver", reflect.TypeOf((*MockIMatchingController)(nil).FindDriver), e)
+}</span>
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: .\service\matchingService.go
+
+// Package mock is a generated GoMock package.
+package mock
+
+import (
+        dto "MatchingAPI/dto"
+        util "MatchingAPI/util"
+        reflect "reflect"
+
+        gomock "github.com/golang/mock/gomock"
+)
+
+// MockIMatchingService is a mock of IMatchingService interface.
+type MockIMatchingService struct {
+        ctrl     *gomock.Controller
+        recorder *MockIMatchingServiceMockRecorder
+}
+
+// MockIMatchingServiceMockRecorder is the mock recorder for MockIMatchingService.
+type MockIMatchingServiceMockRecorder struct {
+        mock *MockIMatchingService
+}
+
+// NewMockIMatchingService creates a new mock instance.
+func NewMockIMatchingService(ctrl *gomock.Controller) *MockIMatchingService <span class="cov8" title="1">{
+        mock := &amp;MockIMatchingService{ctrl: ctrl}
+        mock.recorder = &amp;MockIMatchingServiceMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockIMatchingService) EXPECT() *MockIMatchingServiceMockRecorder <span class="cov8" title="1">{
+        return m.recorder
+}</span>
+
+// FindDriver mocks base method.
+func (m *MockIMatchingService) FindDriver(arg0 *dto.SearchLocation, arg1 util.HttpClient) (*dto.MatchResponse, error) <span class="cov8" title="1">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindDriver", arg0, arg1)
+        ret0, _ := ret[0].(*dto.MatchResponse)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// FindDriver indicates an expected call of FindDriver.
+func (mr *MockIMatchingServiceMockRecorder) FindDriver(arg0, arg1 interface{}) *gomock.Call <span class="cov8" title="1">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindDriver", reflect.TypeOf((*MockIMatchingService)(nil).FindDriver), arg0, arg1)
+}</span>
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: .\service\userService.go
+
+// Package mock is a generated GoMock package.
+package mock
+
+import (
+        dto "MatchingAPI/dto"
+        reflect "reflect"
+
+        gomock "github.com/golang/mock/gomock"
+)
+
+// MockIUserService is a mock of IUserService interface.
+type MockIUserService struct {
+        ctrl     *gomock.Controller
+        recorder *MockIUserServiceMockRecorder
+}
+
+// MockIUserServiceMockRecorder is the mock recorder for MockIUserService.
+type MockIUserServiceMockRecorder struct {
+        mock *MockIUserService
+}
+
+// NewMockIUserService creates a new mock instance.
+func NewMockIUserService(ctrl *gomock.Controller) *MockIUserService <span class="cov0" title="0">{
+        mock := &amp;MockIUserService{ctrl: ctrl}
+        mock.recorder = &amp;MockIUserServiceMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockIUserService) EXPECT() *MockIUserServiceMockRecorder <span class="cov0" title="0">{
+        return m.recorder
+}</span>
+
+// CreateJWT mocks base method.
+func (m *MockIUserService) CreateJWT() *dto.UserResponse <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "CreateJWT")
+        ret0, _ := ret[0].(*dto.UserResponse)
+        return ret0
+}</span>
+
+// CreateJWT indicates an expected call of CreateJWT.
+func (mr *MockIUserServiceMockRecorder) CreateJWT() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateJWT", reflect.TypeOf((*MockIUserService)(nil).CreateJWT))
+}</span>
+
+// CreateWrongJWT mocks base method.
+func (m *MockIUserService) CreateWrongJWT() *dto.UserResponse <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "CreateWrongJWT")
+        ret0, _ := ret[0].(*dto.UserResponse)
+        return ret0
+}</span>
+
+// CreateWrongJWT indicates an expected call of CreateWrongJWT.
+func (mr *MockIUserServiceMockRecorder) CreateWrongJWT() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateWrongJWT", reflect.TypeOf((*MockIUserService)(nil).CreateWrongJWT))
+}</span>
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package route
+
+import (
+        "MatchingAPI/initialization"
+        "github.com/labstack/echo/v4"
+        echoSwagger "github.com/swaggo/echo-swagger"
+)
+
+//const SEARCHING = "searching"
+//
+//var route = map[string]string{}
+//
+//func init() {
+//        route[SEARCHING] = "/search/driver"
+//}
+
+//func GetRoute(index string) string {
+//        return route[index]
+//}
+
+func Route(e *echo.Echo) <span class="cov0" title="0">{
+        driverAPI := initialization.InitializeDriverAPI()
+        searching(e, driverAPI)
+        e.GET("/swagger/*", echoSwagger.WrapHandler)
+        userAPI := initialization.InitializeUserAPI()
+        token(e, userAPI)
+
+}</span>
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package route
+
+import (
+        "MatchingAPI/initialization"
+        "MatchingAPI/security"
+        "github.com/labstack/echo/v4"
+        "github.com/labstack/echo/v4/middleware"
+)
+
+func searching(e *echo.Echo, app initialization.DriverAPI) <span class="cov0" title="0">{
+        jwtConfig := security.GetJwtConfigMiddleware()
+
+        searchGroup := e.Group("/search")
+        searchGroup.Use(middleware.JWTWithConfig(jwtConfig))
+
+        searchGroup.GET("/driver", app.Controller.Driver.FindDriver)
+        searchGroup.Use()
+
+}</span>
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package route
+
+import (
+        "MatchingAPI/initialization"
+        "github.com/labstack/echo/v4"
+)
+
+func token(e *echo.Echo, app initialization.UserAPI) <span class="cov0" title="0">{
+        e.GET("/token", app.Controller.User.GetJWT)
+        e.GET("/tokenNotAuthenticated", app.Controller.User.GetWrongJWT)
+}</span>
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package security
+
+import (
+        "MatchingAPI/config"
+        "MatchingAPI/dto"
+        "errors"
+        "fmt"
+        "github.com/golang-jwt/jwt"
+        "github.com/labstack/echo/v4"
+        "github.com/labstack/echo/v4/middleware"
+        "strings"
+)
+
+func GetJwtConfigMiddleware() middleware.JWTConfig <span class="cov0" title="0">{
+        return middleware.JWTConfig{
+                Claims:     &amp;dto.JwtCustomClaims{},
+                SigningKey: []byte(config.Get().JwtSecret),
+                ParseTokenFunc: func(auth string, c echo.Context) (interface{}, error) </span><span class="cov0" title="0">{
+                        return TokenParser(auth)
+                }</span>,
+        }
+}
+
+func TokenParser(auth string) (interface{}, error) <span class="cov8" title="1">{
+        keyFunc := func(t *jwt.Token) (interface{}, error) </span><span class="cov8" title="1">{
+                if t.Method.Alg() != "HS256" </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("unexpected jwt signing method=%v", t.Header["alg"])
+                }</span>
+                <span class="cov8" title="1">return []byte(config.Get().JwtSecret), nil</span>
+        }
+        <span class="cov8" title="1">if strings.HasPrefix(auth, "Bearer ") </span><span class="cov8" title="1">{
+                auth = strings.Replace(auth,"Bearer ","",1)
+        }</span>
+        <span class="cov8" title="1">token, err := jwt.Parse(auth, keyFunc)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">if !token.Valid </span><span class="cov0" title="0">{
+                return nil, errors.New("invalid token")
+        }</span>
+        <span class="cov8" title="1">if claims, ok := token.Claims.(jwt.MapClaims); ok &amp;&amp; token.Valid </span><span class="cov8" title="1">{
+                authenticated := claims["authenticated"]
+                if isAuthenticated, isOK := authenticated.(bool); isOK </span><span class="cov8" title="1">{
+                        if !isAuthenticated </span><span class="cov8" title="1">{
+                                return nil, errors.New("the user has not suitable credential")
+                        }</span>
+                }
+        }
+        <span class="cov8" title="1">return token, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package server
+
+import (
+        "MatchingAPI/exception"
+        "MatchingAPI/route"
+        "fmt"
+        "github.com/afex/hystrix-go/hystrix"
+        "github.com/labstack/echo/v4"
+        "net/http"
+        "strings"
+)
+
+type Server struct {
+}
+
+func NewServer() *Server <span class="cov0" title="0">{
+        return &amp;Server{}
+}</span>
+
+func init() <span class="cov8" title="1">{
+        //hystrix.ConfigureCommand(route.GetRoute(route.SEARCHING), hystrix.CommandConfig{
+        hystrix.ConfigureCommand("/search/driver", hystrix.CommandConfig{
+                Timeout:                500,
+                RequestVolumeThreshold: 5,
+                ErrorPercentThreshold:  50,
+                SleepWindow:            hystrix.DefaultSleepWindow,
+        })
+}</span>
+
+func customHTTPErrorHandler(err error, c echo.Context) <span class="cov0" title="0">{
+        code := http.StatusInternalServerError
+        if strings.Contains(err.Error(), exception.GetHystrixException().Message) </span><span class="cov0" title="0">{
+                code = http.StatusInternalServerError
+                c.JSON(code, exception.GetHystrixException())
+                return
+        }</span>
+        <span class="cov0" title="0">if strings.Contains(err.Error(), exception.GetDataNotFoundException().Message) </span><span class="cov0" title="0">{
+                code = http.StatusNotFound
+                c.JSON(code, exception.GetDataNotFoundException())
+                return
+        }</span>
+        <span class="cov0" title="0">if strings.Contains(err.Error(), exception.GetUnauthorizedException().Message) </span><span class="cov0" title="0">{
+                code = http.StatusUnauthorized
+                c.JSON(code, exception.GetUnauthorizedException())
+                return
+        }</span>
+
+        <span class="cov0" title="0">c.JSON(code, exception.GetGenericException(err.Error()))</span>
+}
+
+func (server *Server) StartServer(port int) <span class="cov0" title="0">{
+        e := echo.New()
+        route.Route(e)
+        e.HTTPErrorHandler = customHTTPErrorHandler
+        e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", port)))
+}</span>
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package service
+
+import (
+        "MatchingAPI/dto"
+        "MatchingAPI/exception"
+        "MatchingAPI/util"
+        "encoding/json"
+        "github.com/afex/hystrix-go/hystrix"
+        "io/ioutil"
+        "net/http"
+        "sync"
+)
+
+var lock = &amp;sync.Mutex{}
+
+var singleInstance IMatchingService
+
+type IMatchingService interface {
+        FindDriver(*dto.SearchLocation, util.HttpClient) (*dto.MatchResponse, error)
+}
+
+type MatchingService struct{}
+
+func NewMatchingService() IMatchingService <span class="cov8" title="1">{
+        if singleInstance == nil </span><span class="cov8" title="1">{
+                lock.Lock()
+                defer lock.Unlock()
+                if singleInstance == nil </span><span class="cov8" title="1">{
+                        singleInstance = &amp;MatchingService{}
+                }</span>
+        }
+        <span class="cov8" title="1">return singleInstance</span>
+}
+
+func (m MatchingService) FindDriver(searchLocation *dto.SearchLocation, client util.HttpClient) (*dto.MatchResponse, error) <span class="cov8" title="1">{
+        successResponse := make(chan *dto.MatchResponse, 1)
+        //errHystrix := hystrix.Go(route.GetRoute(route.SEARCHING), func() error {
+        // hystrix.Go asynchronous , hystrix.Do synchronous
+        errHystrix := hystrix.Go("/search/driver", func() error </span><span class="cov8" title="1">{
+                request, err := util.FindDriverRequest(searchLocation)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov8" title="1">response, err := client.Do(request)
+                if response == nil </span><span class="cov8" title="1">{
+                        return exception.GetGenericException("Can not react driver location service")
+                }</span>
+                <span class="cov8" title="1">defer response.Body.Close()
+                if response.StatusCode == http.StatusInternalServerError </span><span class="cov8" title="1">{
+                        return exception.GetDataNotFoundException()
+                }</span>
+                <span class="cov8" title="1">if response.StatusCode == http.StatusUnauthorized </span><span class="cov8" title="1">{
+                        return exception.GetUnauthorizedException()
+                }</span>
+                <span class="cov8" title="1">if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov8" title="1">body, _ := ioutil.ReadAll(response.Body)
+                var result = dto.MatchResponse{}
+
+                err = json.Unmarshal(body, &amp;result)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov8" title="1">successResponse &lt;- &amp;result
+                return nil</span>
+        }, func(err error) error <span class="cov8" title="1">{
+                return err
+        }</span>)
+
+        <span class="cov8" title="1">select </span>{
+        case response := &lt;-successResponse:<span class="cov8" title="1">
+                return response, nil</span>
+        case err := &lt;-errHystrix:<span class="cov8" title="1">
+                return nil, err</span>
+        }
+}</pre>
+		
+		<pre class="file" id="file18" style="display: none">package service
+
+import (
+        "MatchingAPI/config"
+        "MatchingAPI/dto"
+        "github.com/golang-jwt/jwt"
+        "sync"
+        "time"
+)
+
+var userLock = &amp;sync.Mutex{}
+var userSingleInstance IUserService
+
+type IUserService interface {
+        CreateJWT() *dto.UserResponse
+        CreateWrongJWT() *dto.UserResponse
+}
+
+type UserService struct{}
+
+func NewUserService() IUserService <span class="cov8" title="1">{
+        if userSingleInstance == nil </span><span class="cov8" title="1">{
+                userLock.Lock()
+                defer userLock.Unlock()
+                if userSingleInstance == nil </span><span class="cov8" title="1">{
+                        userSingleInstance = &amp;UserService{}
+                }</span>
+        }
+        <span class="cov8" title="1">return userSingleInstance</span>
+}
+
+func (u *UserService) CreateJWT() *dto.UserResponse <span class="cov8" title="1">{
+        claims := &amp;dto.JwtCustomClaims{
+                Name:          "Jon Snow",
+                Authenticated: true,
+                StandardClaims: jwt.StandardClaims{
+                        ExpiresAt: time.Now().Add(time.Hour * time.Duration(config.Get().JwtDurationHour)).Unix(),
+                },
+        }
+
+        token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+        signedToken, _ := token.SignedString([]byte(config.Get().JwtSecret))
+
+        return &amp;dto.UserResponse{
+                Name:  claims.Name,
+                Token: "Bearer " + signedToken,
+        }
+}</span>
+
+func (u *UserService) CreateWrongJWT() *dto.UserResponse <span class="cov8" title="1">{
+        claims := &amp;dto.JwtCustomClaims{
+                Name:          "Joffrey Baratheon",
+                Authenticated: false,
+                StandardClaims: jwt.StandardClaims{
+                        ExpiresAt: time.Now().Add(time.Hour * time.Duration(config.Get().JwtDurationHour)).Unix(),
+                },
+        }
+
+        token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+        signedToken, _ := token.SignedString([]byte(config.Get().JwtSecret))
+
+        return &amp;dto.UserResponse{
+                Name:  claims.Name,
+                Token: "Bearer " + signedToken,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file19" style="display: none">package util
+
+import (
+        "MatchingAPI/dto"
+        "fmt"
+        "io"
+        "net/http"
+        "strings"
+)
+
+var TestMatchResponse = &amp;dto.MatchResponse{
+        Distance: 10,
+        Title:    "Test",
+}
+
+type ClientMock struct {
+}
+
+func (c *ClientMock) Do(req *http.Request) (*http.Response, error) <span class="cov8" title="1">{
+        return &amp;http.Response{
+                Body: io.NopCloser(strings.NewReader(fmt.Sprintf("{\"distance\":%f, \"title\":\"%s\"}",
+                        TestMatchResponse.Distance, TestMatchResponse.Title))),
+        }, nil
+}</span>
+
+type NilBodyClientMock struct {
+}
+
+func (c *NilBodyClientMock) Do(req *http.Request) (*http.Response, error) <span class="cov8" title="1">{
+        return nil, nil
+}</span>
+
+type ClientDataNotFoundMock struct {
+}
+
+func (c *ClientDataNotFoundMock) Do(req *http.Request) (*http.Response, error) <span class="cov8" title="1">{
+        return &amp;http.Response{
+                StatusCode: http.StatusInternalServerError,
+                Body: io.NopCloser(strings.NewReader(fmt.Sprintf("{\"distance\":%f, \"title\":\"%s\"}",
+                        TestMatchResponse.Distance, TestMatchResponse.Title))),
+        }, nil
+}</span>
+
+type ClientUnauthorizedMock struct {
+}
+
+func (c *ClientUnauthorizedMock) Do(req *http.Request) (*http.Response, error) <span class="cov8" title="1">{
+        return &amp;http.Response{
+                StatusCode: http.StatusUnauthorized,
+                Body: io.NopCloser(strings.NewReader(fmt.Sprintf("{\"distance\":%f, \"title\":\"%s\"}",
+                        TestMatchResponse.Distance, TestMatchResponse.Title))),
+        }, nil
+}</span>
+
+</pre>
+		
+		<pre class="file" id="file20" style="display: none">package util
+
+import (
+        "MatchingAPI/config"
+        "MatchingAPI/dto"
+        "fmt"
+        "net/http"
+)
+
+func FindDriverRequest(searchLocation *dto.SearchLocation) (*http.Request, error) <span class="cov8" title="1">{
+        url := fmt.Sprintf("http://localhost:3000/api/search/location?radius=%d&amp;longitude=%.20f&amp;latitude=%.20f",
+                searchLocation.Radius,
+                searchLocation.Longitude,
+                searchLocation.Latitude)
+
+        request, err := http.NewRequest("GET", url, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">request.Header.Set("Content-Type", "application/json")
+        request.Header.Set(config.Get().MatchApiHeader, config.Get().SecretMatchApiKey)
+        return request, nil</span>
+}
+
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

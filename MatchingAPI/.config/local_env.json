@@ -1,0 +1,6 @@
+{
+  "jwtSecret": "imthemostsecretwordintheworld.THEMOST!",
+  "jwtDurationHour": 72,
+  "SecretMatchApiKey": "matchApıSecretKey",
+  "MatchApiHeader": "match-api-key"
+}
